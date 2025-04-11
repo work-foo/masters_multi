@@ -1,19 +1,25 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const fs = require('fs');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    fullscreen: true,
+    frame: false,
+    autoHideMenuBar: true,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+      webviewTag: true
     }
   });
 
-  const filePath = path.join(__dirname, 'index.html');
-  win.loadFile(filePath);
+  // Load the multiviewer grid
+  win.loadFile('index.html');
+
+  // Prevent webview content from taking over fullscreen
+  win.webContents.on('will-enter-html-full-screen', (event) => {
+    event.preventDefault(); // Block fullscreen takeover
+  });
 }
 
 app.whenReady().then(createWindow);
