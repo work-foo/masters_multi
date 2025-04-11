@@ -69,38 +69,34 @@
     <webview id="webview4" src="https://www.masters.com/en_US/live/index.html"></webview>
     <button class="maximize-button" onclick="maximizeVideo(4)">Maximize</button>
   </div>
-
+  
   <script>
-    // JavaScript to handle maximizing the video inside the webview
     function maximizeVideo(panelNumber) {
-  const webview = document.getElementById(`webview${panelNumber}`);
-  webview.openDevTools(); // Optional: open DevTools to debug inside the webview
-
-  webview.executeJavaScript(`
-    (() => {
-      const container = document.querySelector('.videoContainer');
-      if (!container) {
-        console.warn('[maximize] No .videoContainer found');
-        return;
-      }
-
-      // Apply styles safely
-      Object.assign(container.style, {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        zIndex: '9999',
-        backgroundColor: '#000'
-      });
-
-      console.log('[maximize] .videoContainer expanded');
-    })();
-  `, true); // async = true
-}
-
+      const webview = document.getElementById(`webview${panelNumber}`);
+      
+      webview.executeJavaScript(`
+        (() => {
+          const container = document.querySelector('.videoContainer');
+          if (!container) {
+            console.warn('[maximize] No .videoContainer found');
+            return;
+          }
+  
+          const rect = container.getBoundingClientRect();
+          const scrollY = window.scrollY || document.documentElement.scrollTop;
+          const targetScrollTop = rect.top + scrollY - (window.innerHeight / 2) + (rect.height / 2);
+  
+          window.scrollTo({
+            top: targetScrollTop,
+            behavior: 'smooth'
+          });
+  
+          console.log('[maximize] Scrolled .videoContainer to center');
+        })();
+      `, true); // async = true
+    }
   </script>
+  
 </body>
 </html>
 
