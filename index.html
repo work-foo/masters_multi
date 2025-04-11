@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Masters Multiviewer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      width: 100vw;
+      height: 100vh;
+    }
+    .panel {
+      position: relative;
+      border: none;
+      overflow: hidden;
+    }
+    webview {
+      width: 100%;
+      height: 100%;
+    }
+    .maximize-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      border: none;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .panel:hover .maximize-btn {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <div class="panel">
+      <button class="maximize-btn" onclick="maximizeView(0)">Maximize</button>
+      <webview id="wv0" src="https://www.masters.com/en_US/live/index.html" allowpopups disablewebsecurity></webview>
+    </div>
+    <div class="panel">
+      <button class="maximize-btn" onclick="maximizeView(1)">Maximize</button>
+      <webview id="wv1" src="https://www.masters.com/en_US/live/index.html" allowpopups disablewebsecurity></webview>
+    </div>
+    <div class="panel">
+      <button class="maximize-btn" onclick="maximizeView(2)">Maximize</button>
+      <webview id="wv2" src="https://www.masters.com/en_US/live/index.html" allowpopups disablewebsecurity></webview>
+    </div>
+    <div class="panel">
+      <button class="maximize-btn" onclick="maximizeView(3)">Maximize</button>
+      <webview id="wv3" src="https://www.masters.com/en_US/live/index.html" allowpopups disablewebsecurity></webview>
+    </div>
+  </div>
+
+  <script>
+    function maximizeView(index) {
+      const webview = document.getElementById('wv' + index);
+      webview.executeJavaScript(`
+        (() => {
+          const el = document.querySelector('.video-wrapper');
+          if (!el) {
+            console.warn('[maximize] No .video-wrapper found');
+            return;
+          }
+
+          const rect = el.getBoundingClientRect();
+          const absoluteTop = rect.top + window.scrollY;
+          const scrollTarget = absoluteTop - (window.innerHeight / 2) + (rect.height / 2);
+          window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+
+          console.log('[scroll] .video-wrapper centered');
+        })();
+      `);
+    }
+  </script>
+</body>
+</html>
